@@ -204,7 +204,13 @@ def simulate_sort_algorithm(arr, alg_name, display):
 
 if __name__ == "__main__":
     pygame.init()
-    sort_algorithm = sys.argv[1]
+    sort_algorithm = "bubblesort"
+    if(len(sys.argv) >= 2):
+        sort_algorithm = sys.argv[1]
+    n_elements = 10
+    if len(sys.argv) >= 3:
+        n_elements = int(sys.argv[2])
+    
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
     arr = [i for i in range(10)]
