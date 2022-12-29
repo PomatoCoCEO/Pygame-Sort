@@ -1,4 +1,5 @@
 import sys, pygame
+import os
 import random
 
 ELEMENT_COLOR = (255, 127, 0)
@@ -10,6 +11,9 @@ clock = None
 WIDTH = 1000
 HEIGHT = 800
 PROP = 0.25  # proportion between rectangle width and interval width
+# NO_FRAMES = 0
+# ALGO_FOLDER = "algorithms/"
+# SORT_ALGORITHM = "quicksort"
 
 
 def draw_element(
@@ -40,6 +44,9 @@ def draw_array(display, arrTexts, width_rectangle, height_reference, poses_eleva
             display, arrTexts, i, width_rectangle, height_reference, is_elevated
         )
     pygame.display.update()
+    # global NO_FRAMES
+    # pygame.image.save(display, "algorithms/%s/%04d.png" % (SORT_ALGORITHM, NO_FRAMES))
+    # NO_FRAMES += 1
 
 
 def matrix_comparisons(file_name):
@@ -57,7 +64,6 @@ def swap_elements(arr, arrText, i, j):
 
 
 def compare_elements(display, arrTexts, width_reference, height_reference, arr, i, j):
-    swapped = False
     draw_array(display, arrTexts, width_reference, height_reference)
     clock.tick(FREQUENCY_CLOCK)
     draw_array(display, arrTexts, width_reference, height_reference, [i, j])
@@ -147,12 +153,14 @@ def simulate_quicksort(arr, arrTexts, display, width_reference, height_reference
                 display, arrTexts, width_reference, height_reference, arr, j, high
             ):
                 i += 1
-                compare_and_swap(
-                    display, arrTexts, width_reference, height_reference, arr, i,j
-                )
-        compare_and_swap(
-            display, arrTexts, width_reference, height_reference, arr, i + 1, high
-        )
+                if i != j:
+                    compare_and_swap(
+                        display, arrTexts, width_reference, height_reference, arr, i, j
+                    )
+        if i + 1 != high:
+            compare_and_swap(
+                display, arrTexts, width_reference, height_reference, arr, i + 1, high
+            )
         return i + 1
 
     def quicksort(arr, arrTexts, display, width_reference, height_reference, low, high):
@@ -204,23 +212,22 @@ def simulate_sort_algorithm(arr, alg_name, display):
 
 if __name__ == "__main__":
     pygame.init()
-    sort_algorithm = "bubblesort"
-    if(len(sys.argv) >= 2):
-        sort_algorithm = sys.argv[1]
+    if len(sys.argv) >= 2:
+        SORT_ALGORITHM = sys.argv[1]
+    if not os.path.isdir(f"algorithms/{SORT_ALGORITHM}"):
+        os.mkdir(f"algorithms/{SORT_ALGORITHM}")
     n_elements = 10
     if len(sys.argv) >= 3:
         n_elements = int(sys.argv[2])
-    
+
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
     arr = [i for i in range(10)]
     random.shuffle(arr)
     clock = pygame.time.Clock()
-    simulate_sort_algorithm(arr, sort_algorithm, screen)
+    simulate_sort_algorithm(arr, SORT_ALGORITHM, screen)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-    
